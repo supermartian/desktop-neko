@@ -2,18 +2,21 @@ name: Build macOS (DMG)
 
 on:
   push:
-    branches: [main]
+    branches: [master]
+    tags: ["v*"]
   pull_request:
 
 jobs:
   build:
     runs-on: macos-latest
+
     steps:
       - uses: actions/checkout@v4
 
-      - uses: dtolnay/rust-toolchain@stable
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
         with:
-          targets: x86_64-apple-darwin, aarch64-apple-darwin
+          targets: x86_64-apple-darwin,aarch64-apple-darwin
 
       - name: Cache cargo
         uses: actions/cache@v4
@@ -23,6 +26,7 @@ jobs:
             ~/.cargo/git
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-cargo-
 
       - name: Build x86_64
         run: cargo build --release --target x86_64-apple-darwin
@@ -39,19 +43,28 @@ jobs:
 
       - name: Create .app bundle
         run: |
-          mkdir -p "Desktop Neko.app/Contents/MacOS"
-          mkdir -p "Desktop Neko.app/Contents/Resources"
-          cp desktop-neko-universal "Desktop Neko.app/Contents/MacOS/desktop-neko"
-          cp src/neko.petpkg "Desktop Neko.app/Contents/Resources/"
-          cat > "Desktop Neko.app/Contents/Info.plist" << 'EOF'
+          APP="Desktop Neko.app"
+          mkdir -p "$APP/Contents/MacOS"
+          mkdir -p "$APP/Contents/Resources"
+
+          cp desktop-neko-universal "$APP/Contents/MacOS/desktop-neko"
+          chmod +x "$APP/Contents/MacOS/desktop-neko"
+
+          # Copy pet packages so the app has its default content
+          cp -R packages "$APP/Contents/Resources/packages"
+
+          cat > "$APP/Contents/Info.plist" << 'EOF'
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0">
           <dict>
             <key>CFBundleName</key><string>Desktop Neko</string>
+            <key>CFBundleDisplayName</key><string>Desktop Neko</string>
             <key>CFBundleIdentifier</key><string>com.desktop-neko.app</string>
             <key>CFBundleVersion</key><string>0.1.0</string>
+            <key>CFBundleShortVersionString</key><string>0.1.0</string>
             <key>CFBundleExecutable</key><string>desktop-neko</string>
+            <key>CFBundlePackageType</key><string>APPL</string>
             <key>LSUIElement</key><true/>
             <key>NSHighResolutionCapable</key><true/>
             <key>LSMinimumSystemVersion</key><string>12.0</string>
@@ -72,8 +85,14 @@ jobs:
             "Desktop Neko.dmg" \
             "Desktop Neko.app"
 
-      - name: Upload DMG
+      - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: desktop-neko-macos-universal
           path: "Desktop Neko.dmg"
+
+      - name: Upload to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: "Desktop Neko.dmg"

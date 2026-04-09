@@ -1,8 +1,23 @@
+# Rust build output
 /target
+
+# Compiled binaries (don't commit built executables)
 *.exe
-*.log
-*.txt
+
+# Build / debug logs
+build.log
+build_errors.log
+build_log.txt
+logs.txt
+cargo_v.txt
+
+# Python
 .venv/
 __pycache__/
 *.pyc
+
+# Editor / tool artifacts
 .antigravityrules.bak
+
+# Generated PNG from image tools (large, not source)
+packages/Gemini_Generated_Image*.png
