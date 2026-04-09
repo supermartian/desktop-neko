@@ -7,8 +7,8 @@ export component PetWindow inherits Window {
     background: transparent;
 
     in property <image> current-frame;
-    in property <length> sprite-width;
-    in property <length> sprite-height;
+    in property <float> sprite-width;
+    in property <float> sprite-height;
     in property <bool>  show-menu;
     in property <[StandardListViewItem]> available_packages;
 
@@ -19,13 +19,13 @@ export component PetWindow inherits Window {
     callback remove-pet();
     callback quit-all();
 
-    width: sprite-width;
-    height: sprite-height;
+    width: sprite-width * 1phx;
+    height: sprite-height * 1phx;
 
     Image {
         source: current-frame;
-        width: sprite-width;
-        height: sprite-height;
+        width: parent.width;
+        height: parent.height;
         image-rendering: pixelated;
     }
 

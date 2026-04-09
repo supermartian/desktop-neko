@@ -16,10 +16,10 @@ priority = 10
 [[states.transitions]]
 condition = { type = "timer", min_seconds = 5.0, max_seconds = 10.0 }
 targets = [
-    { state = "walk_right", weight = 0.6 },
-    { state = "walk_left", weight = 0.6 },
+    { state = "walk_right", weight = 0.5 },
+    { state = "walk_left", weight = 0.5 },
     { state = "sleep", weight = 0.8 },
-    { state = "happy", weight = 0.5 }
+    { state = "happy", weight = 0.6 }
 ]
 
 [[states]]
