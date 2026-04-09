@@ -1,0 +1,79 @@
+name: Build macOS (DMG)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-apple-darwin, aarch64-apple-darwin
+
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Build x86_64
+        run: cargo build --release --target x86_64-apple-darwin
+
+      - name: Build aarch64 (Apple Silicon)
+        run: cargo build --release --target aarch64-apple-darwin
+
+      - name: Create universal binary
+        run: |
+          lipo -create \
+            target/x86_64-apple-darwin/release/desktop-neko \
+            target/aarch64-apple-darwin/release/desktop-neko \
+            -output desktop-neko-universal
+
+      - name: Create .app bundle
+        run: |
+          mkdir -p "Desktop Neko.app/Contents/MacOS"
+          mkdir -p "Desktop Neko.app/Contents/Resources"
+          cp desktop-neko-universal "Desktop Neko.app/Contents/MacOS/desktop-neko"
+          cp src/neko.petpkg "Desktop Neko.app/Contents/Resources/"
+          cat > "Desktop Neko.app/Contents/Info.plist" << 'EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>CFBundleName</key><string>Desktop Neko</string>
+            <key>CFBundleIdentifier</key><string>com.desktop-neko.app</string>
+            <key>CFBundleVersion</key><string>0.1.0</string>
+            <key>CFBundleExecutable</key><string>desktop-neko</string>
+            <key>LSUIElement</key><true/>
+            <key>NSHighResolutionCapable</key><true/>
+            <key>LSMinimumSystemVersion</key><string>12.0</string>
+          </dict>
+          </plist>
+          EOF
+
+      - name: Install create-dmg
+        run: brew install create-dmg
+
+      - name: Create DMG
+        run: |
+          create-dmg \
+            --volname "Desktop Neko" \
+            --window-size 600 400 \
+            --icon-size 128 \
+            --app-drop-link 450 185 \
+            "Desktop Neko.dmg" \
+            "Desktop Neko.app"
+
+      - name: Upload DMG
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-neko-macos-universal
+          path: "Desktop Neko.dmg"

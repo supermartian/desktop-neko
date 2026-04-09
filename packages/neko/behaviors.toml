@@ -1,0 +1,68 @@
+[behavior]
+initial_state = "idle"
+tick_rate_ms = 100
+
+[[states]]
+name = "idle"
+animation = "idle"
+[[states.transitions]]
+condition = { type = "cursor_near", distance = 150.0 }
+target = "alert"
+priority = 20
+[[states.transitions]]
+condition = { type = "on_click", button = "left", count = 1 }
+target = "happy"
+priority = 15
+[[states.transitions]]
+condition = { type = "timer", min_seconds = 5.0, max_seconds = 10.0 }
+targets = [
+    { state = "walk_right", weight = 3.0 },
+    { state = "walk_left", weight = 3.0 },
+    { state = "sleep", weight = 1.0 }
+]
+
+[[states]]
+name = "alert"
+animation = "alert"
+[[states.transitions]]
+condition = { type = "cursor_far", distance = 150.0 }
+target = "idle"
+
+[[states]]
+name = "walk_right"
+animation = "walk_right"
+movement = { direction = "right", speed_px_s = 60.0 }
+[[states.transitions]]
+condition = { type = "at_edge", edge = "right" }
+target = "walk_left"
+[[states.transitions]]
+condition = { type = "timer", min_seconds = 3.0, max_seconds = 8.0 }
+target = "idle"
+
+[[states]]
+name = "walk_left"
+animation = "walk_left"
+movement = { direction = "left", speed_px_s = 60.0 }
+[[states.transitions]]
+condition = { type = "at_edge", edge = "left" }
+target = "walk_right"
+[[states.transitions]]
+condition = { type = "timer", min_seconds = 3.0, max_seconds = 8.0 }
+target = "idle"
+
+[[states]]
+name = "happy"
+animation = "happy"
+[[states.transitions]]
+condition = { type = "animation_done" }
+target = "idle"
+
+[[states]]
+name = "sleep"
+animation = "sleep"
+[[states.transitions]]
+condition = { type = "on_click", button = "left", count = 1 }
+target = "idle"
+[[states.transitions]]
+condition = { type = "timer", min_seconds = 10.0, max_seconds = 20.0 }
+target = "idle"

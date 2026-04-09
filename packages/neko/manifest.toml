@@ -1,0 +1,41 @@
+[package]
+name = "Neko Cat"
+version = "1.0.0"
+author = "Desktop Neko"
+
+[sprite]
+width = 64
+height = 64
+fps = 8
+
+[[animations]]
+name = "idle"
+sheet = "sprites/idle.png"
+frames = 4
+
+[[animations]]
+name = "walk_right"
+sheet = "sprites/walk_right.png"
+frames = 4
+
+[[animations]]
+name = "walk_left"
+sheet = "sprites/walk_left.png"
+frames = 4
+
+[[animations]]
+name = "alert"
+sheet = "sprites/alert.png"
+frames = 2
+fps = 4
+
+[[animations]]
+name = "sleep"
+sheet = "sprites/sleep.png"
+frames = 4
+fps = 2
+
+[[animations]]
+name = "happy"
+sheet = "sprites/happy.png"
+frames = 2

@@ -1,0 +1,41 @@
+name: Build Windows
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - name: Cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Build release
+        run: cargo build --release --target x86_64-pc-windows-msvc
+
+      - name: Prepare zip
+        run: |
+          mkdir release_pkg
+          copy target\x86_64-pc-windows-msvc\release\desktop-neko.exe release_pkg\
+          copy src\neko.petpkg release_pkg\
+          Compress-Archive -Path release_pkg\* -DestinationPath desktop-neko-windows-x64.zip
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-neko-windows-x64
+          path: desktop-neko-windows-x64.zip

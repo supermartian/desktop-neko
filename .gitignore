@@ -1,0 +1,8 @@
+/target
+*.exe
+*.log
+*.txt
+.venv/
+__pycache__/
+*.pyc
+.antigravityrules.bak

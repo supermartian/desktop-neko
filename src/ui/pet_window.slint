@@ -1,0 +1,89 @@
+import { VerticalBox, StandardListView } from "std-widgets.slint";
+
+export component PetWindow inherits Window {
+    title: "Desktop Neko";
+    no-frame: true;
+    always-on-top: true;
+    background: transparent;
+
+    in property <image> current-frame;
+    in property <length> sprite-width;
+    in property <length> sprite-height;
+    in property <bool>  show-menu;
+    in property <[StandardListViewItem]> available_packages;
+
+    callback left-clicked();
+    callback right-clicked(float, float);
+    callback drag-delta(dx: length, dy: length);
+    callback spawn-package(int);
+    callback remove-pet();
+    callback quit-all();
+
+    width: sprite-width;
+    height: sprite-height;
+
+    Image {
+        source: current-frame;
+        width: sprite-width;
+        height: sprite-height;
+        image-rendering: pixelated;
+    }
+
+    TouchArea {
+        width: 100%;
+        height: 100%;
+
+        clicked => { left-clicked(); }
+
+        pointer-event(event) => {
+            if (event.button == PointerEventButton.right && event.kind == PointerEventKind.up) {
+                context-popup.show();
+            }
+        }
+
+        moved => {
+            if (self.pressed) {
+                drag-delta(self.mouse-x - self.pressed-x, self.mouse-y - self.pressed-y);
+            }
+        }
+    }
+
+    context-popup := PopupWindow {
+        width: 150px;
+        x: 0px; 
+        y: 0px; // Will be set dynamically by clicking, or we just stick it to a corner
+        
+        Rectangle {
+            background: white;
+            border-color: gray;
+            border-width: 1px;
+            border-radius: 4px;
+            
+            VerticalBox {
+                padding: 4px;
+                spacing: 2px;
+                
+                Text { text: "Desktop Neko"; font-weight: 800; font-size: 12px; }
+                
+                Rectangle { height: 1px; background: gray; }
+                
+                TouchArea {
+                    width: parent.width; height: 20px;
+                    Text { text: "Spawn Another"; vertical-alignment: center; }
+                    clicked => { spawn-package(0); context-popup.close(); }
+                }
+                TouchArea {
+                    width: parent.width; height: 20px;
+                    Text { text: "Remove Pet"; vertical-alignment: center; }
+                    clicked => { remove-pet(); context-popup.close(); }
+                }
+                Rectangle { height: 1px; background: gray; }
+                TouchArea {
+                    width: parent.width; height: 20px;
+                    Text { text: "Quit All"; vertical-alignment: center; }
+                    clicked => { quit-all(); context-popup.close(); }
+                }
+            }
+        }
+    }
+}
