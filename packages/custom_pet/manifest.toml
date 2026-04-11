@@ -10,7 +10,7 @@ fps = 8
 
 [[animations]]
 name = "alert"
-sheet = "sprites/alert.png"
+sheet = "sprites/pet.png"
 frames = 40
 
 [[animations]]
@@ -36,5 +36,10 @@ frames = 40
 [[animations]]
 name = "walk_right"
 sheet = "sprites/walk_right.png"
-frames = 24
+frames = 40
+
+[[animations]]
+name = "trans1"
+sheet = "sprites/trans1.png"
+frames = 40
 

@@ -11,16 +11,57 @@ target = "fall"
 priority = 90
 [[states.transitions]]
 condition = { type = "on_click", button = "left", count = 3 }
-target = "annoyed"
+target = "trans_to_pet"
 priority = 10
 [[states.transitions]]
 condition = { type = "timer", min_seconds = 5.0, max_seconds = 10.0 }
 targets = [
-    { state = "walk_right", weight = 0.5 },
-    { state = "walk_left", weight = 0.5 },
-    { state = "sleep", weight = 0.8 },
+    { state = "trans_to_walk_right", weight = 0.5 },
+    { state = "trans_to_walk_left", weight = 0.5 },
+    { state = "trans_to_sleep", weight = 0.8 },
     { state = "happy", weight = 0.6 }
 ]
+
+
+# --- TRANSITION STATES ---
+
+[[states]]
+name = "trans_to_pet"
+animation = "trans1"
+[[states.transitions]]
+condition = { type = "animation_done" }
+target = "annoyed"
+
+[[states]]
+name = "trans_to_walk_right"
+animation = "alert"
+[[states.transitions]]
+condition = { type = "animation_done" }
+target = "walk_right"
+
+[[states]]
+name = "trans_to_walk_left"
+animation = "alert"
+[[states.transitions]]
+condition = { type = "animation_done" }
+target = "walk_left"
+
+[[states]]
+name = "trans_to_sleep"
+animation = "idle"
+[[states.transitions]]
+condition = { type = "animation_done" }
+target = "sleep"
+
+[[states]]
+name = "trans_to_idle"
+animation = "alert"
+[[states.transitions]]
+condition = { type = "animation_done" }
+target = "idle"
+
+# -------------------------
+
 
 [[states]]
 name = "walk_right"
@@ -36,11 +77,11 @@ target = "annoyed"
 priority = 10
 [[states.transitions]]
 condition = { type = "at_edge", edge = "right" }
-target = "walk_left"
+target = "trans_to_walk_left"
 priority = 5
 [[states.transitions]]
 condition = { type = "timer", min_seconds = 3.0, max_seconds = 8.0 }
-target = "idle"
+target = "trans_to_idle"
 
 [[states]]
 name = "walk_left"
@@ -56,11 +97,11 @@ target = "annoyed"
 priority = 10
 [[states.transitions]]
 condition = { type = "at_edge", edge = "left" }
-target = "walk_right"
+target = "trans_to_walk_right"
 priority = 5
 [[states.transitions]]
 condition = { type = "timer", min_seconds = 3.0, max_seconds = 8.0 }
-target = "idle"
+target = "trans_to_idle"
 
 [[states]]
 name = "sleep"
@@ -75,31 +116,31 @@ target = "annoyed"
 priority = 10
 [[states.transitions]]
 condition = { type = "timer", min_seconds = 10.0, max_seconds = 20.0 }
-target = "idle"
+target = "trans_to_idle"
 
 [[states]]
 name = "happy"
 animation = "happy"
 [[states.transitions]]
 condition = { type = "timer", min_seconds = 3.0, max_seconds = 5.0 }
-target = "idle"
+target = "trans_to_idle"
 
 [[states]]
 name = "alert"
 animation = "alert"
 [[states.transitions]]
-condition = { type = "timer", min_seconds = 3.0, max_seconds = 5.0 }
-target = "idle"
+condition = { type = "timer", min_seconds = 5.0, max_seconds = 5.0 }
+target = "trans_to_idle"
 
 [[states]]
 name = "annoyed"
 animation = "alert"
 [[states.transitions]]
-condition = { type = "timer", min_seconds = 3.0, max_seconds = 6.0 }
+condition = { type = "timer", min_seconds = 5.0, max_seconds = 5.0 }
 targets = [
-    { state = "idle", weight = 1.0 },
-    { state = "walk_left", weight = 0.5 },
-    { state = "walk_right", weight = 0.5 }
+    { state = "trans_to_idle", weight = 1.0 },
+    { state = "trans_to_walk_left", weight = 0.5 },
+    { state = "trans_to_walk_right", weight = 0.5 }
 ]
 
 [[states]]
@@ -111,4 +152,4 @@ target = "fall"
 priority = 10
 [[states.transitions]]
 condition = { type = "timer", min_seconds = 2.0, max_seconds = 4.0 }
-target = "idle"
+target = "trans_to_idle"
