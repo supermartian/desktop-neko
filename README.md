@@ -1,6 +1,6 @@
 # Desktop Neko
 
-![Desktop Neko Preview](nian.png)
+<img src="nian.png" width="256" height="256" alt="Desktop Neko Preview">
 
 Desktop Neko is a delightful, cross-platform virtual desktop pet application written in Rust using the [Slint](https://slint.dev) UI framework. Inspired by the classic virtual pets of the late 90s and early 2000s, Desktop Neko brings a lively companion to your modern desktop that walks, sleeps, and reacts to your interactions.
 

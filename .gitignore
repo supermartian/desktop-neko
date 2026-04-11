@@ -17,7 +17,7 @@ __pycache__/
 *.pyc
 
 # Editor / tool artifacts
-.antigravityrules.bak
+*.bak
 
 # Generated PNG from image tools (large, not source)
 packages/Gemini_Generated_Image*.png
