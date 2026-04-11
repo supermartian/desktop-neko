@@ -43,3 +43,7 @@ name = "trans1"
 sheet = "sprites/trans1.png"
 frames = 40
 
+[[animations]]
+name = "trans_to_sleep"
+sheet = "sprites/trans_to_sleep.png"
+frames = 39

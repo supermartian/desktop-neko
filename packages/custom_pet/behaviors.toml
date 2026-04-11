@@ -16,10 +16,10 @@ priority = 10
 [[states.transitions]]
 condition = { type = "timer", min_seconds = 5.0, max_seconds = 10.0 }
 targets = [
-    { state = "trans_to_walk_right", weight = 0.5 },
-    { state = "trans_to_walk_left", weight = 0.5 },
+    { state = "trans_to_walk_right", weight = 0.2 },
+    { state = "trans_to_walk_left", weight = 0.2 },
     { state = "trans_to_sleep", weight = 0.8 },
-    { state = "happy", weight = 0.6 }
+    { state = "happy", weight = 0.2 }
 ]
 
 
@@ -48,7 +48,7 @@ target = "walk_left"
 
 [[states]]
 name = "trans_to_sleep"
-animation = "idle"
+animation = "trans_to_sleep"
 [[states.transitions]]
 condition = { type = "animation_done" }
 target = "sleep"
