@@ -54,7 +54,24 @@ impl App {
     /// Scan the `packages/` directory for subfolders. Each subfolder that contains
     /// a valid `manifest.toml` and `behaviors.toml` is loaded as a package.
     pub fn load_packages(&mut self) {
-        let packages_dir = std::path::Path::new("packages");
+        let mut packages_dir = std::path::PathBuf::from("packages");
+
+        if !packages_dir.exists() {
+            if let Ok(exe_path) = std::env::current_exe() {
+                if let Some(exe_dir) = exe_path.parent() {
+                    let adj = exe_dir.join("packages");
+                    if adj.exists() {
+                        packages_dir = adj;
+                    } else if let Some(contents) = exe_dir.parent() {
+                        let res = contents.join("Resources").join("packages");
+                        if res.exists() {
+                            packages_dir = res;
+                        }
+                    }
+                }
+            }
+        }
+        
         if !packages_dir.is_dir() {
             log_error("packages/ directory not found — no pets to load.");
             return;
