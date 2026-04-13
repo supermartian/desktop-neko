@@ -9,7 +9,7 @@ slint = { version = "1", features = ["backend-winit"] }
 toml = "0.8"
 serde = { version = "1", features = ["derive"] }
 image = { version = "0.25", default-features = false, features = ["png"] }
-tray-icon = "0.19"
+tray-icon = "0.22"
 log = "0.4"
 env_logger = "0.11"
 rand = "0.8"
@@ -26,8 +26,8 @@ windows = { version = "0.58", features = [
 ] }
 
 [target.'cfg(target_os = "macos")'.dependencies]
-objc2 = "0.5"
-objc2-app-kit = { version = "0.2", features = ["NSWindow", "NSColor"] }
+objc2 = "0.6"
+objc2-app-kit = { version = "0.3", features = ["NSWindow", "NSColor"] }
 
 [build-dependencies]
 slint-build = "1"
